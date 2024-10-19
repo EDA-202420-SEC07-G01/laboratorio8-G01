@@ -48,26 +48,33 @@ def set_value(my_entry, value):
 
 
 def get_key(my_entry):
-    """ 
+    """
     Retorna la llave de la entry recibida como parámetro
-
-    :param my_entry: La pareja llave-valor
-    :type my_entry: map_entry
-
-    :return: La llave de la pareja
+    
+    :param my_entry: La pareja llave-valor o None
+    :type my_entry: map_entry or None
+    
+    :return: La llave de la pareja o None si la entrada está vacía
     :rtype: any
     """
+    if my_entry is None:
+        return None  
+    
     return my_entry['key']
 
 
 def get_value(my_entry):
     """
     Retorna el valor de la entry recibida como parámetro
-
-    :param my_entry: La pareja llave-valor
-    :type my_entry: map_entry
     
-    :return: El valor de la pareja
+    :param my_entry: La pareja llave-valor o None
+    :type my_entry: map_entry or None
+    
+    :return: El valor de la pareja o None si la entrada está vacía
     :rtype: any
     """
+    
+    if my_entry is None:
+        return None 
+ 
     return my_entry['value']
