@@ -189,29 +189,34 @@ def get_crimes_by_range(analyzer, initialDate, finalDate):
     """
     Retorna el numero de crimenes en un rago de fechas.
     """
-    crimes = 0
-    fecha_i = datetime.datetime.strptime(initialDate, '%Y-%m-%d %H:%M:%S')
-    fecha_f = datetime.datetime.strptime(finalDate, '%Y-%m-%d %H:%M:%S')
+    start_date = datetime.datetime.strptime(initialDate, '%Y-%m-%d').date()
+    end_date = datetime.datetime.strptime(finalDate, '%Y-%m-%d').date()
     
-    for crime in range(fecha_i, fecha_f):
-        map = bst.get(analyzer['dateIndex'], crime)
-        size = al.size[map['lstcrimes']]
-        if map != None:
-            crimes = size
-    return crimes
+    total_crimes = 0
+
+    current_date = start_date
+    while current_date <= end_date:
+        crime_data = bst.get(analyzer['dateIndex'], current_date)
+        if crime_data is not None:
+            total_crimes += al.size(crime_data['lstcrimes'])
+        current_date += datetime.timedelta(days=1)
+
+    return total_crimes
+
 
 def get_crimes_by_range_code(analyzer, initialDate, offensecode):
     """
     Para una fecha determinada, retorna el numero de crimenes
     de un tipo especifico.
     """
-    fecha_i = datetime.datetime.strptime(initialDate, '%Y-%m-%d %H:%M:%S')
-    ultima_fecha = max_key(analyzer)
-    crimes = 0
+    date = datetime.datetime.strptime(initialDate, '%Y-%m-%d').date()
+    total_crimes = 0
     
-    for crime in range(fecha_i, ultima_fecha):
-        map = bst.get(analyzer['dateIndex'],crime)
-        size = al.size(map['lstcrimes'])
-        if map is not None and offensecode == map['OFFENSE_CODE_GROUP']:
-            crimes = size
-    return crimes
+    crime_data = bst.get(analyzer['dateIndex'], date)
+    
+    if crime_data is not None:
+        offense_entry = lp.get(crime_data['offenseIndex'], offensecode)
+        if offense_entry is not None:
+            total_crimes = al.size(offense_entry['lstoffenses'])
+    
+    return total_crimes
